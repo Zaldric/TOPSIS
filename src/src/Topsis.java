@@ -1,22 +1,22 @@
 package src;
 
-import org.apache.commons.math3.linear.EigenDecomposition;
-import org.apache.commons.math3.linear.MatrixUtils;
-import org.apache.commons.math3.linear.RealMatrix;
-
-import java.util.ArrayList;
-
 class Topsis {
 
-    double[][] criteria;
-    double[] weights;
+    double[][] criteria, criteriaNormalization, criteriaWeights, idealDistances, antiIdealDistances;
+    double[] weights, alternativesIdealDistances, alternativesAntiIdealDistances;
     boolean[] costCriteria;
+    WeightedNormalisedRatings weightedNormalisedRatings[];
 
     Topsis(int numberOfCriteria, int numberOfAlternatives) {
 
         criteria = new double[numberOfAlternatives][numberOfCriteria];
         weights = new double[numberOfCriteria];
+        alternativesIdealDistances = new double[numberOfCriteria];
+        alternativesAntiIdealDistances = new double[numberOfCriteria];
         costCriteria = new boolean[numberOfCriteria];
+        idealDistances = new double[numberOfAlternatives][numberOfCriteria];
+        antiIdealDistances = new double[numberOfAlternatives][numberOfCriteria];
+
     }
 
     /**
@@ -32,7 +32,9 @@ class Topsis {
             }
         }
 
-        WeightedNormalisedRatings weightedNormalisedRatings[] = new WeightedNormalisedRatings[criteria.length];
+        criteriaWeights = criteria.clone();
+
+        weightedNormalisedRatings = new WeightedNormalisedRatings[criteria.length];
 
         for (int i = 0; i < criteria.length; ++i) {
 
@@ -63,14 +65,16 @@ class Topsis {
             double idealSum = 0.0, antiIdealSum = 0.0;
 
             for (int j = 0; j < criteria[i].length; ++j) {
-                idealSum += Math.pow((weightedNormalisedRatings[j].getIdealSolution() - criteria[i][j]), 2);
-                antiIdealSum += Math.pow((weightedNormalisedRatings[j].getAntiIdealSolution() - criteria[i][j]), 2);
+                idealDistances[j][i] = Math.pow((weightedNormalisedRatings[j].getIdealSolution() - criteria[i][j]), 2);
+                antiIdealDistances[j][i] = Math.pow((weightedNormalisedRatings[j].getAntiIdealSolution() - criteria[i][j]), 2);
+                idealSum += idealDistances[j][i];
+                antiIdealSum += antiIdealDistances[j][i];
             }
 
-            idealSum = Math.sqrt(idealSum);
-            antiIdealSum = Math.sqrt(antiIdealSum);
+            alternativesIdealDistances[i] = idealSum = Math.sqrt(idealSum);
+            alternativesAntiIdealDistances[i] = antiIdealSum = Math.sqrt(antiIdealSum);
 
-            ranking[i] = antiIdealSum / idealSum + antiIdealSum;
+            ranking[i] = antiIdealSum / (idealSum + antiIdealSum);
         }
 
         return ranking;
@@ -94,6 +98,7 @@ class Topsis {
                 criteria[j][i] = criteria[j][i] / denominator;
             }
         }
+        criteriaNormalization = criteria.clone();
     }
 
     /**
@@ -103,7 +108,7 @@ class Topsis {
 
         for (int i = 0; i < criteria.length; ++i) {
 
-            double value = criteria[i][0];
+            double value = criteria[0][i];
 
             if (costCriteria[i]) {
                 for (int j = 1; j < criteria[i].length; ++j) {
@@ -127,60 +132,9 @@ class Topsis {
                     criteria[j][i] = criteria[j][i] / value;
                 }
             }
-
-
         }
+
+        criteriaNormalization = criteria.clone();
     }
 
-    /**
-     * Normalizes the vector by dividing each element by the sum of all vector's elements.
-     *
-     * @param vector the vector to normalize.
-     * @return an array with normalized elements.
-     */
-    private double[] normalizeVector(double[] vector) {
-
-        double[] normalizedVector = new double[vector.length];
-        double sum = 0;
-
-        for (double element : vector) {
-            sum += element;
-        }
-
-        for (int i = 0; i < vector.length; ++i) {
-            normalizedVector[i] = vector[i] / sum;
-        }
-
-        return normalizedVector;
-    }
-
-    /**
-     * Calculates the consistency ratios for the AHP problem.
-     *
-     * @return the consistency ratio for the matrix.
-     */
-    double calculateConsistencyRatio() {
-
-        double[] randomIndex = new double[] {0.58, 0.9, 1.12, 1.24, 1.32, 1.41, 1.45, 1.49};
-
-        RealMatrix realMatrix = MatrixUtils.createRealMatrix(criteria);
-
-        EigenDecomposition decomposition = new EigenDecomposition(realMatrix);
-        double[] eigenValues = decomposition.getRealEigenvalues();
-
-        int pos = 0;
-
-        for (int i = 1; i < eigenValues.length; ++i) {
-            if (eigenValues[i] > eigenValues[pos]) {
-                pos = i;
-            }
-        }
-
-        double consistencyIndex = (eigenValues[pos] - criteria.length) / (criteria.length - 1);
-
-        if (criteria.length <= 3) {
-            return consistencyIndex / randomIndex[0];
-        }
-        return consistencyIndex / randomIndex[criteria.length - 1];
-    }
 }
