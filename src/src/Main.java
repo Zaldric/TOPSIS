@@ -205,6 +205,189 @@ public class Main {
                 System.out.println();
                 System.out.println("The best alternative is to choose " + names[bestAlternative] + ". \n");
 
+                System.out.println("Exercise 2: ");
+                System.out.println("Ideal normalization: ");
+
+                topsis = new Topsis(4, 4);
+
+                topsis.criteria = new double[][]{
+                        {160, 40, 175, 3},
+                        {130, 28, 200, 2.5},
+                        {170, 50, 160, 3.5},
+                        {188, 33, 189, 3},
+                };
+
+                topsis.weights = new double[]{0.6, 0.2, 0.1, 0.1};
+                topsis.costCriteria = new boolean[]{true, false, false, false};
+                names = new String[] {"M4-A4", "AK-47", "M16", "SCAR-L"};
+
+
+                topsis.idealNormalization();
+                ranking = topsis.TopsisMethod();
+
+                System.out.println();
+                System.out.println("Normalized matrix: ");
+                for (int i = 0; i < topsis.criteriaNormalization.length; ++i) {
+                    for (int j = 0; j < topsis.criteriaNormalization[0].length; ++j) {
+                        System.out.print(topsis.criteriaNormalization[i][j] + " ");
+                    }
+                    System.out.println();
+                }
+
+                System.out.println();
+                System.out.println("Matrix after applying weights: ");
+                for (int i = 0; i < topsis.criteriaWeights.length; ++i) {
+                    for (int j = 0; j < topsis.criteriaWeights[0].length; ++j) {
+                        System.out.print(topsis.criteriaWeights[i][j] + " ");
+                    }
+                    System.out.println();
+                }
+
+                System.out.println();
+                System.out.println("Ideal solution: ");
+                for (int i = 0; i < criteriaNames.length; ++i) {
+                    System.out.println(criteriaNames[i] + ": " + topsis.weightedNormalisedRatings[i].getIdealSolution());
+                }
+                System.out.println();
+
+                System.out.println("Anti-ideal solution: ");
+                for (int i = 0; i < criteriaNames.length; ++i) {
+                    System.out.println(criteriaNames[i] + ": " + topsis.weightedNormalisedRatings[i].getAntiIdealSolution());
+                }
+                System.out.println();
+
+                System.out.println("Distance to ideal solution: ");
+                for (int i = 0; i < topsis.idealDistances.length; ++i) {
+                    for (int j = 0; j < topsis.idealDistances[0].length; ++j) {
+                        System.out.print(topsis.idealDistances[i][j] + " ");
+                    }
+                    System.out.println();
+                }
+                System.out.println();
+
+                for (int i = 0; i < topsis.alternativesIdealDistances.length; ++i) {
+                    System.out.println(names[i] + " " + topsis.alternativesIdealDistances[i]);
+                }
+                System.out.println();
+
+                System.out.println("Distance to anti-ideal solution: ");
+                for (int i = 0; i < topsis.antiIdealDistances.length; ++i) {
+                    for (int j = 0; j < topsis.antiIdealDistances[0].length; ++j) {
+                        System.out.print(topsis.antiIdealDistances[i][j] + " ");
+                    }
+                    System.out.println();
+                }
+                System.out.println();
+
+                for (int i = 0; i < topsis.alternativesAntiIdealDistances.length; ++i) {
+                    System.out.println(names[i] + " " + topsis.alternativesAntiIdealDistances[i]);
+                }
+                System.out.println();
+
+                bestAlternative = 0;
+                System.out.println("Ranking: ");
+
+                for (int i = 0; i < ranking.length; ++i) {
+                    System.out.println(names[i] + ": " + ranking[i]);
+                    if (ranking[i] > ranking[bestAlternative]) {
+                        bestAlternative = i;
+                    }
+                }
+
+                System.out.println();
+                System.out.println("The best alternative is to choose " + names[bestAlternative] + ". \n");
+
+                System.out.println("Exercise 2: ");
+                System.out.println("Distributive normalization: ");
+
+                topsis = new Topsis(4, 4);
+
+                topsis.criteria = new double[][]{
+                        {160, 40, 175, 3},
+                        {130, 28, 200, 2.5},
+                        {170, 50, 160, 3.5},
+                        {188, 33, 189, 3},
+                };
+
+                topsis.weights = new double[]{0.6, 0.2, 0.1, 0.1};
+                topsis.costCriteria = new boolean[]{true, false, false, false};
+
+
+                topsis.distributiveNormalization();
+                ranking = topsis.TopsisMethod();
+
+                System.out.println();
+                System.out.println("Normalized matrix: ");
+                for (int i = 0; i < topsis.criteriaNormalization.length; ++i) {
+                    for (int j = 0; j < topsis.criteriaNormalization[0].length; ++j) {
+                        System.out.print(topsis.criteriaNormalization[i][j] + " ");
+                    }
+                    System.out.println();
+                }
+
+                System.out.println();
+                System.out.println("Matrix after applying weights: ");
+                for (int i = 0; i < topsis.criteriaWeights.length; ++i) {
+                    for (int j = 0; j < topsis.criteriaWeights[0].length; ++j) {
+                        System.out.print(topsis.criteriaWeights[i][j] + " ");
+                    }
+                    System.out.println();
+                }
+
+                System.out.println();
+                System.out.println("Ideal solution: ");
+                for (int i = 0; i < criteriaNames.length; ++i) {
+                    System.out.println(criteriaNames[i] + ": " + topsis.weightedNormalisedRatings[i].getIdealSolution());
+                }
+                System.out.println();
+
+                System.out.println("Anti-ideal solution: ");
+                for (int i = 0; i < criteriaNames.length; ++i) {
+                    System.out.println(criteriaNames[i] + ": " + topsis.weightedNormalisedRatings[i].getAntiIdealSolution());
+                }
+                System.out.println();
+
+                System.out.println("Distance to ideal solution: ");
+                for (int i = 0; i < topsis.idealDistances.length; ++i) {
+                    for (int j = 0; j < topsis.idealDistances[0].length; ++j) {
+                        System.out.print(topsis.idealDistances[i][j] + " ");
+                    }
+                    System.out.println();
+                }
+                System.out.println();
+
+                for (int i = 0; i < topsis.alternativesIdealDistances.length; ++i) {
+                    System.out.println(names[i] + " " + topsis.alternativesIdealDistances[i]);
+                }
+                System.out.println();
+
+                System.out.println("Distance to anti-ideal solution: ");
+                for (int i = 0; i < topsis.antiIdealDistances.length; ++i) {
+                    for (int j = 0; j < topsis.antiIdealDistances[0].length; ++j) {
+                        System.out.print(topsis.antiIdealDistances[i][j] + " ");
+                    }
+                    System.out.println();
+                }
+                System.out.println();
+
+                for (int i = 0; i < topsis.alternativesAntiIdealDistances.length; ++i) {
+                    System.out.println(names[i] + " " + topsis.alternativesAntiIdealDistances[i]);
+                }
+                System.out.println();
+
+                bestAlternative = 0;
+                System.out.println("Ranking: ");
+
+                for (int i = 0; i < ranking.length; ++i) {
+                    System.out.println(names[i] + ": " + ranking[i]);
+                    if (ranking[i] > ranking[bestAlternative]) {
+                        bestAlternative = i;
+                    }
+                }
+
+                System.out.println();
+                System.out.println("The best alternative is to choose " + names[bestAlternative] + ". \n");
+
             } else if (mode.equals("2")) {
 
                 int numberOfCriteria, numberOfAlternatives;
